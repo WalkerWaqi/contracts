@@ -235,16 +235,18 @@ contract OjtToken is PausableToken {
       balances[msg.sender] = totalSupply;    // Give the creator all initial tokens
     }
     function () {
-        //if ether is sent to this address, send it back.
-        revert();
+      //if ether is sent to this address, send it back.
+      revert();
     }
     /// @notice Create `mintedAmount` tokens and send it to `target`
     /// @param target Address to receive the tokens
     /// @param mintedAmount the amount of tokens it will receive
     function mintToken(address target, uint256 mintedAmount) onlyOwner public {
-        balances[target] = balances[target].add(mintedAmount);
-        totalSupply = totalSupply.add(mintedAmount);
-        Transfer(0, owner, mintedAmount);
-        Transfer(owner, target, mintedAmount);
+      require(target != address(0));
+      require(mintedAmount > 0);
+      balances[target] = balances[target].add(mintedAmount);
+      totalSupply = totalSupply.add(mintedAmount);
+      Transfer(0, owner, mintedAmount);
+      Transfer(owner, target, mintedAmount);
     }
 }
