@@ -212,30 +212,41 @@ contract PausableToken is StandardToken, Pausable {
   }
 }
 /**
- * @title Ojt Token
+ * @title Ojst Token
  *
- * @dev Implementation of Ojt Token based on the basic standard token.
+ * @dev Implementation of Ojst Token based on the basic standard token.
  */
-contract OjtToken is PausableToken {
+contract OjstToken is PausableToken {
     /**
     * Public variables of the token
     * The following variables are OPTIONAL vanities. One does not have to include them.
     * They allow one to customise the token contract & in no way influences the core functionality.
     * Some wallets/interfaces might not even bother to look at this information.
     */
-    string public name = "OneJoyToken";
-    string public symbol = "OJT";
+    string public name = "OneJoyStableToken";
+    string public symbol = "OJST";
     string public version = '1.0.0';
     uint8 public decimals = 4;
     /**
      * @dev Function to check the amount of tokens that an owner allowed to a spender.
      */
-    function OjtToken() {
-      totalSupply = 10000000000 * (10**(uint256(decimals)));
+    function OjstToken() {
+      totalSupply = 100000000000 * (10**(uint256(decimals)));
       balances[msg.sender] = totalSupply;    // Give the creator all initial tokens
     }
     function () {
       //if ether is sent to this address, send it back.
       revert();
+    }
+    /// @notice Create `mintedAmount` tokens and send it to `target`
+    /// @param target Address to receive the tokens
+    /// @param mintedAmount the amount of tokens it will receive
+    function mintToken(address target, uint256 mintedAmount) onlyOwner public {
+      require(target != address(0));
+      require(mintedAmount > 0);
+      balances[target] = balances[target].add(mintedAmount);
+      totalSupply = totalSupply.add(mintedAmount);
+      Transfer(0, owner, mintedAmount);
+      Transfer(owner, target, mintedAmount);
     }
 }
